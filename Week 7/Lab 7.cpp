@@ -8,31 +8,30 @@ struct node {
 
 // Inorder traversal
 void traverseInOrder(struct node *root) {
-    if (root != NULL) {
-        traverseInOrder(root->left);
-        cout << root->key << " ";
-        traverseInOrder(root->right);
-    }
-
+  if (root == NULL)
+    return;
+  
+  traverseInOrder(root->left);
+  cout << root->key << " ";
+  traverseInOrder(root->right);
 }
 
 // Insert a node
-struct node *insertNode(struct node *node, int key) {
-    if (node == NULL) {
-        node->key = key;
-        return node;
-    }
-    else{
-        if (node->key >= key) {
-            struct node *left = node->left;
-            left->key = key;
-        }
-        if (node->key < key) {
-            struct node *right = node->right;
-            right->key = key;
-        }
-        return node;
-    }
+struct node *insertNode(struct node *root, int key) {
+  if (root == NULL) {
+    struct node *newNode = new node;
+    newNode->key = key;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+  }
+  else if (key < root->key) {
+    root->left = insertNode(root->left, key);
+  }
+  else if (key > root->key) {
+    root->right = insertNode(root->right, key);
+  }
+  return root;
 }
 
 // Deleting a node
@@ -40,12 +39,15 @@ struct node *deleteNode(struct node *root, int key) {
   if (root == NULL) {
     return root;
   }
+  
   if (key < root->key) {
-    root->left = deleteNode(root->left , key);
+    root->left = deleteNode(root->left, key);
   }
+
   else if (key > root->key) {
-    root->right = deleteNode(root->right , key);
+    root->right = deleteNode(root->right, key);
   }
+
   else {
     if (root->left == NULL) {
       struct node *temp = root->right;
@@ -57,11 +59,14 @@ struct node *deleteNode(struct node *root, int key) {
       delete root;
       return temp;
     }
+    
     struct node *temp = root->right;
     while (temp->left != NULL) {
       temp = temp->left;
     }
+    
     root->key = temp->key;
+    
     root->right = deleteNode(root->right, temp->key);
   }
   return root;
@@ -94,4 +99,6 @@ int main() {
   }
   
   traverseInOrder(root);
+  
+  return 0;
 }
